@@ -9,7 +9,9 @@ import 'package:travel_app/Screens/Dashboard.dart';
 import 'package:travel_app/Screens/Image_Open.dart';
 import 'package:travel_app/Screens/Booking_Screen.dart';
 import 'package:travel_app/Models/Buttons_Data.dart';
-import 'package:travel_app/Screens/Print_Preview.dart';
+import 'package:travel_app/Screens/Vault_screen.dart';
+
+import 'Screens/Profile_screen.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +23,8 @@ void main() async{
       '/login-screen': (context) => Login_screen(),
       '/signup-screen': (context) => Signup_screen(),
       '/home-screen': (context) => Dashboard(),
+      '/vault-screen': (context) => Vault_screen(),
+      '/profile_screen': (context) => Profile_screen(),
       '/camera-screen': (context) => Image_Open(),
       '/payment-screen': (context) => Payment(),
       '/booking-screen-0': (context) => Booking_Screen(data: Homepage_Model.booking_screen_data[0],),
