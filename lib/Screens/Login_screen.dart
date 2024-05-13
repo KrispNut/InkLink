@@ -89,7 +89,7 @@ class _Login_screen_State extends State<Login_screen> {
                       constraints: BoxConstraints(maxWidth: screenWidth-80,maxHeight: 80),
                       contentPadding: EdgeInsets.fromLTRB(20, 1, 1, 1),
                       hintText: 'email@gmail.com',
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.white),
                         borderRadius: BorderRadius.circular(30.0),
@@ -113,7 +113,7 @@ class _Login_screen_State extends State<Login_screen> {
                       constraints: BoxConstraints(maxWidth: screenWidth-80,maxHeight: 80),
                       contentPadding: EdgeInsets.fromLTRB(20, 1, 1, 1),
                       hintText: 'password',
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: TextStyle(color: Colors.white.withOpacity(0.3)),
                       suffixIcon: IconButton(
                         icon: Icon(Icons.remove_red_eye, color: Colors.white),
                         onPressed: () => _password.clear(),
