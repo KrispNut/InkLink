@@ -35,7 +35,7 @@ class Profile_screen extends StatelessWidget {
                 ProfileHeader(),
                 SizedBox(height: 20),
                 Container(
-                  padding: EdgeInsets.only(left: 20), // Adjust the left padding here
+                  padding: EdgeInsets.only(left: 20),
                   child: ProfileOptionsList(),
                 ),
               ],
@@ -67,13 +67,16 @@ class BackButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back_ios),
-      iconSize: 20,
-      onPressed: () {
-        Navigator.pushNamed(context, '/home-screen');
-      },
-      color: Colors.orange,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0,50,0,0),
+      child: IconButton(
+        icon: Icon(Icons.arrow_back_ios),
+        iconSize: 30,
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        color: Colors.orange,
+      ),
     );
   }
 }
@@ -83,13 +86,16 @@ class ProfileTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      'Profile',
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 30,
-        fontWeight: FontWeight.bold,
-        fontFamily: 'Matrix',
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0,50,0,0),
+      child: Text(
+        'Profile',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 50,
+          fontWeight: FontWeight.bold,
+          fontFamily: 'Matrix',
+        ),
       ),
     );
   }
@@ -125,7 +131,7 @@ class ProfileHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'John Doe', // Replace with user's name
+                'John Doe',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -133,7 +139,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               Text(
-                'User Info', // Replace with user's info
+                'User Info',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -159,36 +165,42 @@ class ProfileOptionsList extends StatelessWidget {
           title: 'Language',
           icon: Icons.language,
           color: Colors.green,
+          onPressed: () {},
+        ),
+        SizedBox(height: 20),
+        ProfileOptionButton(
+          title: 'Trasnsaction',
+          icon: Icons.list_outlined,
+          color: Colors.orangeAccent,
           onPressed: () {
-            // Handle language option
+            Navigator.pushNamed(context, '/Transaction_History_screen');
           },
         ),
         SizedBox(height: 20),
         ProfileOptionButton(
           title: 'Log Out',
           icon: Icons.exit_to_app,
-          color: Colors.red, // Setting color to red for Log Out button
-          onPressed: () {
-            // Handle log out option
-          },
+          color: Colors.red,
+          onPressed: () {},
         ),
       ],
     );
   }
 }
 
+
 class ProfileOptionButton extends StatelessWidget {
   final String title;
   final IconData icon;
   final VoidCallback onPressed;
-  final Color? color; // Color parameter added
+  final Color? color;
 
   const ProfileOptionButton({
     Key? key,
     required this.title,
     required this.icon,
     required this.onPressed,
-    this.color, // Color parameter added
+    this.color,
   }) : super(key: key);
 
   @override
@@ -206,7 +218,7 @@ class ProfileOptionButton extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              color: color ?? Colors.white, // Use provided color or default to white
+              color: color ?? Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -220,9 +232,4 @@ class ProfileOptionButton extends StatelessWidget {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: Profile_screen(),
-    routes: {'/home-screen': (context) => Container()}, // Add your home screen route
-  ));
-}
+

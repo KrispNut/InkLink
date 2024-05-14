@@ -66,15 +66,15 @@ class _Dashboard_State extends State<Dashboard> {
                     borderRadius: BorderRadius.circular(40.0),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.person_outline_rounded),
-                    iconSize: 30,
+                    icon: Image.asset('assets/images/Customer.png', width: 30, height: 30),
                     onPressed: () {
                       Future.delayed(Duration(milliseconds: 0), () {
-                        Navigator.pushNamed(context,'/profile_screen');
+                        Navigator.pushNamed(context, '/profile_screen');
                       });
                     },
                     color: Colors.white,
-                  ),
+                  )
+
                 ),
               ],
             ),
@@ -155,12 +155,8 @@ class _Dashboard_State extends State<Dashboard> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    // Open file picker and handle the picked file(s)
                     final result = await FilePicker.platform.pickFiles(allowMultiple: true);
-
-                    // Check if files were picked
                     if (result != null && result.files.isNotEmpty) {
-                      // Handle each picked file
                       for (var file in result.files) {
                         _openFile(file);
                       }

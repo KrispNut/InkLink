@@ -59,7 +59,7 @@ class _Login_screen_State extends State<Login_screen> {
                       iconSize: 30,
                       onPressed: () {
                         Future.delayed(Duration(milliseconds: 0), () {
-                          Navigator.pushNamed(context, '/start-screen');
+                          Navigator.pop(context);
                         });
                       },
                       color: Colors.orange,
@@ -137,7 +137,7 @@ class _Login_screen_State extends State<Login_screen> {
                 child: ElevatedButton(
                   onPressed: () {
                     Future.delayed(Duration(milliseconds: 0), () {
-                      Navigator.pushNamed(context, '/home-screen');
+                      Navigator.pushNamedAndRemoveUntil(context, '/home-screen', (route) => false);
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -169,7 +169,7 @@ class _Login_screen_State extends State<Login_screen> {
                 child: ElevatedButton(
                   onPressed: () {
                     Future.delayed(Duration(milliseconds: 0), () {
-                      Navigator.pushNamed(context, '/home-screen');
+                      Navigator.pushNamedAndRemoveUntil(context, '/home-screen', (route) => false);
                     });
                   },
                   style: ElevatedButton.styleFrom(

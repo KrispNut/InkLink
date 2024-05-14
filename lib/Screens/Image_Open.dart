@@ -25,7 +25,7 @@ class _Image_OpenState extends State<Image_Open> {
     cameraValue = cameracontroller.initialize();
   }
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     cameracontroller.dispose();
   }
@@ -111,10 +111,19 @@ class _Image_OpenState extends State<Image_Open> {
     );
   }
   void takepic(BuildContext context) async {
+    if (isFlashOn) {
+      Future.delayed(Duration(seconds: 1), () {
+        setState(() {
+          isFlashOn = false;
+          cameracontroller.setFlashMode(FlashMode.off);
+        });
+      });
+    }
     final image = await cameracontroller.takePicture();
-    // Dispose of the camera controller before navigating to the next page
-    cameracontroller.dispose();
-    Navigator.push(context,MaterialPageRoute(builder: (context) => Print_Preview(imagepath: image.path)),);
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Print_Preview(imagepath: image.path)),
+    );
   }
 
 }
