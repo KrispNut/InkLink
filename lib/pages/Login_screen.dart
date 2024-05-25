@@ -25,7 +25,7 @@ class _Login_screenState extends State<Login_screen> {
         .then(
       (status) {
         if (status == AuthResultStatus.successful) {
-          Fluttertoast.showToast(msg: "Successful");
+          Fluttertoast.showToast(msg: "Logged In");
           // Navigate to the Dashboard page and clear all previous routes
           Navigator.pushAndRemoveUntil(
             context,

@@ -37,13 +37,21 @@ dependencies:
   cupertino_icons: ^1.0.6
   firebase_core: ^2.31.0
   firebase_auth: ^4.19.5
-  image_picker: ^0.8.5+1
+  image_picker: ^1.1.1
   file_picker:
   open_file:
+  image_crop: ^0.4.1
+  gal: ^2.3.0
   path_provider:
-  camera:
+  camera: ^0.10.0
+  printing: ^5.12.0
+  pdf: ^3.7.0
   path:
   fluttertoast: ^8.2.5
+  shared_preferences: ^2.0.0
+  flutter_svg: ^2.0.10+1
+  dropdown_button2: ^2.3.9
+  cloud_firestore: ^4.17.4
 
 dev_dependencies:
   flutter_test:

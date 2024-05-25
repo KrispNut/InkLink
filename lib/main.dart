@@ -5,6 +5,8 @@ import 'package:inklink/authentication/authentication_wrapper.dart';
 import 'package:inklink/pages/Image_Open.dart';
 import 'firebase_options.dart';
 
+late List<CameraDescription> cameras;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();

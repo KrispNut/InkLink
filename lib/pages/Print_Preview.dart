@@ -1,19 +1,28 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:inklink/pages/Payment.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'Dashboard.dart';
+import 'Payment.dart';
 
 class Print_Preview extends StatelessWidget {
-  Print_Preview({super.key, required this.imagepath});
-  String imagepath;
+  final String imagepath;
+  final PlatformFile? file;
+  Print_Preview({Key? key, required this.imagepath, this.file})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
     double screenWidth = MediaQuery.of(context).size.width;
-    return PopScope(
-      canPop: false,
+
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
-        //resizeToAvoidBottomInset : false,
         backgroundColor: const Color(0x00010310),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(-statusBarHeight),
@@ -25,10 +34,7 @@ class Print_Preview extends StatelessWidget {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  const Color(0x003a3c3f).withOpacity(0.5),
-                  Colors.black
-                ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+                color: Colors.white70,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -47,15 +53,31 @@ class Print_Preview extends StatelessWidget {
                           color: const Color(0x00363636),
                           borderRadius: BorderRadius.circular(40.0),
                         ),
-                        child: IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          iconSize: 30,
-                          onPressed: () {
-                            Future.delayed(const Duration(milliseconds: 0), () {
-                              Navigator.pop(context);
-                            });
-                          },
-                          color: Colors.orange,
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40.0),
+                            color: Colors.transparent,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.arrow_back_ios),
+                            iconSize: 30,
+                            onPressed: () {
+                              Future.delayed(const Duration(milliseconds: 100),
+                                  () {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Dashboard(
+                                        user:
+                                            FirebaseAuth.instance.currentUser!),
+                                  ),
+                                  (route) => false,
+                                );
+                              });
+                            },
+                            color: Colors.orange,
+                            splashColor: Colors.orange.withOpacity(0.5),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 90.0),
@@ -63,162 +85,48 @@ class Print_Preview extends StatelessWidget {
                         textAlign: TextAlign.center,
                         'Preview',
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Matrix'),
+                          color: Colors.black,
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Matrix',
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 40.0),
-                  Image(
-                    image: FileImage(File(imagepath)),
-                    height: 500,
-                    width: 425,
-                    fit: BoxFit.fill,
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              child: Container(
-                width: screenWidth,
-                height: 300,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(80),
-                    topRight: Radius.circular(80),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 250,
-              right: 50,
-              child: Container(
-                width: screenWidth - 250,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Colors.orangeAccent,
-                  borderRadius: BorderRadius.all(Radius.circular(60)),
-                ),
-              ),
-            ),
-            const Positioned(
-              bottom: 262,
-              right: 70,
-              child: Text(
-                'HP Smart Laser Jet 11325',
-                style: TextStyle(
-                    color: Colors.black45,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Matrix'),
-              ),
-            ),
-            const Positioned(
-              bottom: 230,
-              left: 50,
-              child: Text(
-                'Copies:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Matrix'),
-              ),
-            ),
-            const Positioned(
-              bottom: 200,
-              left: 50,
-              child: Text(
-                'Paper Size:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Matrix'),
-              ),
-            ),
-            const Positioned(
-              bottom: 170,
-              left: 50,
-              child: Text(
-                'Color:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Matrix'),
-              ),
-            ),
-            const Positioned(
-              bottom: 140,
-              left: 50,
-              child: Text(
-                'Pages:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Matrix'),
-              ),
-            ),
-            const Positioned(
-              bottom: 110,
-              left: 50,
-              child: Text(
-                'Orientation:',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Matrix'),
-              ),
-            ),
-            Positioned(
-              bottom: 20,
-              left: (screenWidth / 2) - 90,
-              child: Container(
-                height: 50,
-                width: screenWidth - 300,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(40.0),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100), () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Payment()),
-                      );
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.grey.shade600,
-                    elevation: 10,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0),
+                  Expanded(
+                    child: PdfPreview(
+                      build: (format) => _generatePdf(format, imagepath),
                     ),
                   ),
-                  child: const Text(
-                    'Print',
-                    style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Matrix'),
-                  ),
-                ),
+                ],
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<Uint8List> _generatePdf(PdfPageFormat format, String imagePath) async {
+    final pdf = pw.Document();
+    final image = pw.MemoryImage(File(imagePath).readAsBytesSync());
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: format,
+        build: (pw.Context context) {
+          return pw.Container(
+            color: PdfColors.white,
+            width: format.availableWidth,
+            height: format.availableHeight,
+            child: pw.Center(
+              child: pw.Image(image),
+            ),
+          );
+        },
+      ),
+    );
+    return pdf.save();
   }
 }

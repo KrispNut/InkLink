@@ -1,12 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-
+import 'package:gal/gal.dart';
 import 'Print_Preview.dart';
 
-late List<CameraDescription> cameras;
-
 class Image_Open extends StatefulWidget {
-  const Image_Open({super.key});
+  final List<CameraDescription> cameras;
+  const Image_Open({super.key, required this.cameras});
 
   @override
   State<Image_Open> createState() => _Image_OpenState();
@@ -16,25 +15,27 @@ class _Image_OpenState extends State<Image_Open> {
   late CameraController cameracontroller;
   late bool isFlashOn = false;
   late Future<void> cameraValue;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    cameracontroller = CameraController(cameras[0], ResolutionPreset.max);
+    cameracontroller =
+        CameraController(widget.cameras[0], ResolutionPreset.max);
     cameraValue = cameracontroller.initialize();
+    cameracontroller.setFlashMode(FlashMode.off);
   }
 
   @override
   void dispose() {
-    super.dispose();
     cameracontroller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    return PopScope(
-      canPop: false,
+    return WillPopScope(
+      onWillPop: () async => false,
       child: Scaffold(
         body: Stack(
           children: [
@@ -43,8 +44,9 @@ class _Image_OpenState extends State<Image_Open> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
                   return SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: CameraPreview(cameracontroller));
+                    height: MediaQuery.of(context).size.height,
+                    child: CameraPreview(cameracontroller),
+                  );
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -66,9 +68,8 @@ class _Image_OpenState extends State<Image_Open> {
                   icon: const Icon(Icons.close_sharp),
                   iconSize: 30,
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 0), () {
-                      Navigator.pop(context);
-                    });
+                    // Navigate back when the close button is pressed
+                    Navigator.pop(context);
                   },
                   color: Colors.orange,
                 ),
@@ -78,21 +79,22 @@ class _Image_OpenState extends State<Image_Open> {
               right: 40.0,
               top: 110.0,
               child: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      isFlashOn = !isFlashOn;
-                      if (isFlashOn) {
-                        cameracontroller.setFlashMode(FlashMode.torch);
-                      } else {
-                        cameracontroller.setFlashMode(FlashMode.off);
-                      }
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.flash_on_rounded,
-                    color: Colors.orange,
-                    size: 30,
-                  )),
+                onPressed: () {
+                  setState(() {
+                    isFlashOn = !isFlashOn;
+                    if (isFlashOn) {
+                      cameracontroller.setFlashMode(FlashMode.torch);
+                    } else {
+                      cameracontroller.setFlashMode(FlashMode.off);
+                    }
+                  });
+                },
+                icon: const Icon(
+                  Icons.flash_on_rounded,
+                  color: Colors.orange,
+                  size: 30,
+                ),
+              ),
             ),
             Positioned(
               left: (screenWidth - 380 / 2) - (screenWidth - 380),
@@ -127,7 +129,7 @@ class _Image_OpenState extends State<Image_Open> {
 
   void takepic(BuildContext context) async {
     if (isFlashOn) {
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 0), () {
         setState(() {
           isFlashOn = false;
           cameracontroller.setFlashMode(FlashMode.off);
@@ -138,7 +140,12 @@ class _Image_OpenState extends State<Image_Open> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Print_Preview(imagepath: image.path)),
+        builder: (context) => Print_Preview(imagepath: image.path),
+      ),
     );
+    await Gal.putImage(image.path);
+    Future.delayed(const Duration(seconds: 3), () async {
+      await cameracontroller.dispose();
+    });
   }
 }
