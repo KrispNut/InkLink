@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:inklink/pages/Profile_screen.dart';
 
+import '../firebase_auth_implementation/toast.dart';
 import '../pages/Start_screen.dart';
 
 class CustomDropdownMenu extends StatefulWidget {
@@ -54,6 +55,7 @@ class _CustomDropdownMenuState extends State<CustomDropdownMenu> {
                 context,
                 MaterialPageRoute(builder: (context) => Start_screen()),
               );
+              showToast(message: "Successfully signed out");
               break;
           }
         },

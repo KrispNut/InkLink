@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../firebase_auth_implementation/firebase_auth_services.dart';
+import '../firebase_auth_implementation/toast.dart';
+import 'Dashboard.dart';
 
 class Signup_screen extends StatefulWidget {
   const Signup_screen({super.key});
@@ -9,20 +14,25 @@ class Signup_screen extends StatefulWidget {
 class _Signup_screen_State extends State<Signup_screen> {
   bool _obscureText = true;
   final double toolbarOpacity = 2.0;
+  final FirebaseAuthService _auth = FirebaseAuthService();
 
-  int current_index = 0;
-  void onTap(int index) {
-    setState(() {
-      current_index = index;
-    });
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  bool isSigningUp = false;
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
     double screenWidth = MediaQuery.of(context).size.width;
-    final TextEditingController _email = TextEditingController();
-    final TextEditingController _password = TextEditingController();
 
     return Scaffold(
       //resizeToAvoidBottomInset : false,
@@ -101,6 +111,48 @@ class _Signup_screen_State extends State<Signup_screen> {
                 child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
+                      'Your Username',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Matrix'),
+                    )),
+              ),
+              Center(
+                child: Opacity(
+                  opacity: 1,
+                  child: TextFormField(
+                    controller: _usernameController,
+                    validator: (text) {
+                      if (text == null || text.trim().isEmpty) {
+                        return 'Username is empty';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      constraints: BoxConstraints(
+                        maxWidth: screenWidth - 80,
+                        maxHeight: 80,
+                      ),
+                      contentPadding: const EdgeInsets.fromLTRB(20, 1, 1, 1),
+                      hintText: 'Username',
+                      hintStyle:
+                          TextStyle(color: Colors.white.withOpacity(0.3)),
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(50, 30, 0, 10),
+                child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
                       'your email',
                       style: TextStyle(
                           color: Colors.white,
@@ -113,7 +165,7 @@ class _Signup_screen_State extends State<Signup_screen> {
                 child: Opacity(
                   opacity: 1,
                   child: TextFormField(
-                    controller: _email,
+                    controller: _emailController,
                     validator: (text) {
                       if (text == null || text.trim().isEmpty) {
                         return 'Email is empty';
@@ -155,7 +207,7 @@ class _Signup_screen_State extends State<Signup_screen> {
                 child: Opacity(
                   opacity: 1,
                   child: TextFormField(
-                    controller: _password,
+                    controller: _passwordController,
                     obscureText: _obscureText,
                     validator: (text) {
                       if (text == null || text.trim().isEmpty) {
@@ -205,8 +257,7 @@ class _Signup_screen_State extends State<Signup_screen> {
                 child: ElevatedButton(
                   onPressed: () {
                     Future.delayed(const Duration(milliseconds: 0), () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/home-screen', (route) => false);
+                      _signUp();
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -217,53 +268,18 @@ class _Signup_screen_State extends State<Signup_screen> {
                       borderRadius: BorderRadius.circular(40.0),
                     ),
                   ),
-                  child: const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Matrix'),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 110),
-              Container(
-                height: 50,
-                width: screenWidth - 180,
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(40.0),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 0), () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, '/home-screen', (route) => false);
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                    elevation: 20,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/images/google logo.png',
-                          height: 22, width: 22),
-                      const SizedBox(width: 20),
-                      const Text(
-                        'Log in with Google',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Matrix',
-                        ),
-                      ),
-                    ],
+                  child: Center(
+                    child: isSigningUp
+                        ? CircularProgressIndicator(
+                            color: Colors.orange,
+                          )
+                        : Text(
+                            'Sign Up',
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Matrix'),
+                          ),
                   ),
                 ),
               ),
@@ -272,5 +288,34 @@ class _Signup_screen_State extends State<Signup_screen> {
         ),
       ),
     );
+  }
+
+  void _signUp() async {
+    setState(() {
+      isSigningUp = true;
+    });
+
+    String username = _usernameController.text;
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    setState(() {
+      isSigningUp = false;
+    });
+    if (user != null) {
+      showToast(message: "User is successfully created");
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              Dashboard(user: FirebaseAuth.instance.currentUser!),
+        ),
+        (route) => false,
+      );
+    } else {
+      showToast(message: "Some error happend");
+    }
   }
 }
