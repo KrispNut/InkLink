@@ -1,11 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../firebase_auth_implementation/firebase_auth_services.dart';
 import '../firebase_auth_implementation/toast.dart';
-import '../service/authentication_service.dart';
-import '../exception/auth_exception_handler.dart';
 import 'Dashboard.dart';
 import 'Forgot_screen.dart';
 
@@ -74,7 +71,7 @@ class _Login_screenState extends State<Login_screen> {
                       icon: const Icon(Icons.arrow_back_ios),
                       iconSize: 30,
                       onPressed: () {
-                        Future.delayed(const Duration(milliseconds: 0), () {
+                        Future.delayed(const Duration(milliseconds: 200), () {
                           Navigator.pop(context);
                         });
                       },
@@ -157,7 +154,7 @@ class _Login_screenState extends State<Login_screen> {
               ),
               GestureDetector(
                 onTap: () {
-                  Future.delayed(const Duration(milliseconds: 100), () {
+                  Future.delayed(const Duration(milliseconds: 200), () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Forgot_screen()),
@@ -230,7 +227,7 @@ class _Login_screenState extends State<Login_screen> {
                   alignment: Alignment.bottomRight,
                   child: InkWell(
                     onTap: () {
-                      Future.delayed(const Duration(milliseconds: 0), () {
+                      Future.delayed(const Duration(milliseconds: 200), () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -298,7 +295,7 @@ class _Login_screenState extends State<Login_screen> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 0), () {
+                    Future.delayed(const Duration(milliseconds: 200), () {
                       _signInWithGoogle(context);
                     });
                   },
@@ -360,7 +357,7 @@ class _Login_screenState extends State<Login_screen> {
         (route) => false,
       );
     } else {
-      showToast(message: "some error occured");
+      showToast(message: "some error occurred");
     }
   }
 
@@ -391,7 +388,7 @@ class _Login_screenState extends State<Login_screen> {
         );
       }
     } catch (e) {
-      showToast(message: "some error occured $e");
+      showToast(message: "some error occurred $e");
     }
   }
 }

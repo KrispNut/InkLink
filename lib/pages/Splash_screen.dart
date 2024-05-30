@@ -77,7 +77,7 @@ class _SplashScreenState extends State<Splash_screen> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 0), () {
+                    Future.delayed(Duration(milliseconds: 200), () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:inklink/pages/Profile_screen.dart';
+import 'package:inklink/pages/Credits.dart';
 
 import '../firebase_auth_implementation/toast.dart';
 import '../pages/Start_screen.dart';
@@ -45,7 +45,7 @@ class _CustomDropdownMenuState extends State<CustomDropdownMenu> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Profile_screen(),
+                  builder: (context) => Credits(),
                 ),
               );
               break;

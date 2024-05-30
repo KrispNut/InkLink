@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import '../firebase_auth_implementation/firebase_auth_services.dart';
 import '../firebase_auth_implementation/toast.dart';
 import 'Dashboard.dart';
@@ -72,7 +71,7 @@ class _Signup_screen_State extends State<Signup_screen> {
                       icon: const Icon(Icons.arrow_back_ios),
                       iconSize: 30,
                       onPressed: () {
-                        Future.delayed(const Duration(milliseconds: 0), () {
+                        Future.delayed(const Duration(milliseconds: 200), () {
                           Navigator.pop(context);
                         });
                       },
@@ -256,7 +255,7 @@ class _Signup_screen_State extends State<Signup_screen> {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 0), () {
+                    Future.delayed(const Duration(milliseconds: 200), () {
                       _signUp();
                     });
                   },
@@ -315,7 +314,7 @@ class _Signup_screen_State extends State<Signup_screen> {
         (route) => false,
       );
     } else {
-      showToast(message: "Some error happend");
+      showToast(message: "Some error happened");
     }
   }
 }

@@ -50,7 +50,7 @@ class Start_screen extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 0), () {
+                    Future.delayed(const Duration(milliseconds: 200), () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -89,7 +89,7 @@ class Start_screen extends StatelessWidget {
                 ),
                 child: ElevatedButton(
                   onPressed: () {
-                    Future.delayed(const Duration(milliseconds: 100), () {
+                    Future.delayed(const Duration(milliseconds: 200), () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(

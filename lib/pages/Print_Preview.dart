@@ -7,7 +7,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'Dashboard.dart';
-import 'Payment.dart';
 
 class Print_Preview extends StatelessWidget {
   final String imagepath;
@@ -96,7 +95,7 @@ class Print_Preview extends StatelessWidget {
                   const SizedBox(height: 40.0),
                   Expanded(
                     child: PdfPreview(
-                      build: (format) => _generatePdf(format, imagepath),
+                      build: (format) => _generatePdf(format, file, imagepath),
                     ),
                   ),
                 ],
@@ -108,25 +107,91 @@ class Print_Preview extends StatelessWidget {
     );
   }
 
-  Future<Uint8List> _generatePdf(PdfPageFormat format, String imagePath) async {
+  Future<Uint8List> _generatePdf(
+      PdfPageFormat format, PlatformFile? file, String imagePath) async {
     final pdf = pw.Document();
-    final image = pw.MemoryImage(File(imagePath).readAsBytesSync());
 
-    pdf.addPage(
-      pw.Page(
-        pageFormat: format,
-        build: (pw.Context context) {
-          return pw.Container(
-            color: PdfColors.white,
-            width: format.availableWidth,
-            height: format.availableHeight,
-            child: pw.Center(
-              child: pw.Image(image),
+    if (file != null) {
+      final fileType = _detectFileType(file);
+
+      switch (fileType) {
+        case 'image':
+          // Use the existing variable for image handling
+          final image = pw.MemoryImage(File(imagePath).readAsBytesSync());
+          pdf.addPage(
+            pw.Page(
+              pageFormat: format,
+              build: (pw.Context context) {
+                return pw.Container(
+                  color: PdfColors.white,
+                  width: format.availableWidth,
+                  height: format.availableHeight,
+                  child: pw.Center(
+                    child: pw.Image(image),
+                  ),
+                );
+              },
             ),
           );
-        },
-      ),
-    );
+          break;
+
+        case 'pdf':
+          final data = File(file.path!).readAsBytesSync();
+          return data;
+
+        case 'text':
+          final text = File(file.path!).readAsStringSync();
+          pdf.addPage(
+            pw.Page(
+              pageFormat: format,
+              build: (pw.Context context) {
+                return pw.Container(
+                  color: PdfColors.white,
+                  width: format.availableWidth,
+                  height: format.availableHeight,
+                  child: pw.Text(text),
+                );
+              },
+            ),
+          );
+          break;
+
+        default:
+          throw UnsupportedError('Unsupported file type');
+      }
+    } else {
+      // Use the existing variable for image handling
+      final image = pw.MemoryImage(File(imagePath).readAsBytesSync());
+      pdf.addPage(
+        pw.Page(
+          pageFormat: format,
+          build: (pw.Context context) {
+            return pw.Container(
+              color: PdfColors.white,
+              width: format.availableWidth,
+              height: format.availableHeight,
+              child: pw.Center(
+                child: pw.Image(image),
+              ),
+            );
+          },
+        ),
+      );
+    }
+
     return pdf.save();
+  }
+
+  String _detectFileType(PlatformFile file) {
+    final extension = file.extension?.toLowerCase();
+    if (extension == 'jpg' || extension == 'jpeg' || extension == 'png') {
+      return 'image';
+    } else if (extension == 'pdf') {
+      return 'pdf';
+    } else if (extension == 'txt') {
+      return 'text';
+    } else {
+      return 'unknown';
+    }
   }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Profile_screen extends StatelessWidget {
-  const Profile_screen({Key? key}) : super(key: key);
+class Credits extends StatelessWidget {
+  const Credits({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +78,8 @@ class Profile_screen extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: InkWell(
-                    onTap: () {
-                      Future.delayed(const Duration(milliseconds: 0), () {});
+                    onTap: () async {
+                      await _launchGmail('suitableforwork@gmail.com');
                     },
                     child: const Text(
                       'suitableforwork@gmail.com',
@@ -95,5 +96,19 @@ class Profile_screen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _launchGmail(String email) async {
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: email,
+      query: 'subject=Hello&body=Hi',
+    );
+    var url = params.toString();
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
