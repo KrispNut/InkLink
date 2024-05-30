@@ -79,7 +79,26 @@ class Credits extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   child: InkWell(
                     onTap: () async {
-                      await _launchGmail('suitableforwork@gmail.com');
+                      String? encodeQueryParameters(
+                          Map<String, String> params) {
+                        return params.entries
+                            .map((MapEntry<String, String> e) =>
+                                '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                            .join('&');
+                      }
+
+                      final Uri emailUri = Uri(
+                        scheme: 'mailto',
+                        path: 'suitableforwork@gmail.com',
+                        query: encodeQueryParameters(<String, String>{
+                          'subject': 'Complaints & Issues!',
+                        }),
+                      );
+                      try {
+                        await launchUrl(emailUri);
+                      } catch (e) {
+                        print(e.toString());
+                      }
                     },
                     child: const Text(
                       'suitableforwork@gmail.com',
