@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import '../tools/drop_down.dart';
 import 'Image_Displaying.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +13,30 @@ import '../main.dart';
 
 class Dashboard extends StatefulWidget {
   final User user;
+  final String username;
 
-  Dashboard({Key? key, required this.user}) : super(key: key);
+  Dashboard({Key? key, required this.user, required this.username})
+      : super(key: key);
 
   @override
   State<Dashboard> createState() => _Dashboard_State();
 }
 
 class _Dashboard_State extends State<Dashboard> {
+  late final LocalAuthentication auth;
+  bool _supportState = false;
+
+  @override
+  void initState() {
+    super.initState();
+    auth = LocalAuthentication();
+    auth.isDeviceSupported().then(
+          (bool isSupported) => setState(() {
+            _supportState = isSupported;
+          }),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
@@ -59,14 +77,16 @@ class _Dashboard_State extends State<Dashboard> {
                         fontFamily: 'Anurati',
                       ),
                     ),
-                    const SizedBox(width: 100),
-                    Text(
-                      'user',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Anurati',
+                    const SizedBox(width: 140),
+                    Expanded(
+                      child: Text(
+                        '${widget.user.email?.split('@').first.trim()}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Anurati',
+                        ),
                       ),
                     ),
                     CustomDropdownMenu(),
@@ -84,15 +104,7 @@ class _Dashboard_State extends State<Dashboard> {
                 shrinkWrap: true,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      Future.delayed(const Duration(milliseconds: 0), () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Vault_screen()),
-                        );
-                      });
-                    },
+                    onPressed: _authenticate,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.grey,
                       backgroundColor: const Color.fromARGB(200, 62, 68, 82),
@@ -188,8 +200,16 @@ class _Dashboard_State extends State<Dashboard> {
                     onPressed: () async {
                       final pickedFile = await ImagePicker()
                           .pickImage(source: ImageSource.gallery);
+
                       if (pickedFile != null) {
-                        print('Image path: ${pickedFile.path}');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                Print_Preview(imagepath: pickedFile.path),
+                            // Pass the imagepath parameter here
+                          ),
+                        );
                       } else {
                         print('No image selected.');
                       }
@@ -219,10 +239,10 @@ class _Dashboard_State extends State<Dashboard> {
                         const SizedBox(width: 10),
                         RichText(
                           text: const TextSpan(
-                            text: "Drive" '\n',
+                            text: "Gallery" '\n',
                             children: [
                               TextSpan(
-                                text: '41 Files',
+                                text: '72 Files',
                               ),
                             ],
                           ),
@@ -301,46 +321,65 @@ class _Dashboard_State extends State<Dashboard> {
                 child: ImageListViewApp(),
               ),
               const SizedBox(height: 20),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                  child: SizedBox(
+                    width: screenWidth - 380,
+                    height: 70,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Future.delayed(const Duration(milliseconds: 0), () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  Image_Open(cameras: cameras),
+                            ),
+                          );
+                        });
+                      },
+                      child: Image.asset(
+                        'assets/images/qr-code-white.png',
+                        width: 45,
+                        height: 45,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(80),
+                        ),
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-            child: SizedBox(
-              width: screenWidth - 380,
-              height: 70,
-              child: ElevatedButton(
-                onPressed: () {
-                  Future.delayed(const Duration(milliseconds: 100), () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Image_Open(cameras: cameras),
-                      ),
-                    );
-                  });
-                },
-                child: Image.asset(
-                  'assets/images/qr-code-white.png',
-                  width: 45,
-                  height: 45,
-                ),
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.grey,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
+  }
+
+  Future<void> _authenticate() async {
+    try {
+      bool authenticated = await auth.authenticate(
+        localizedReason: 'Scan to Peek',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+      Future.delayed(const Duration(milliseconds: 0), () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const Vault_screen()),
+        );
+      });
+      print("Authenticated : $authenticated");
+    } on PlatformException catch (e) {
+      print(e);
+    }
   }
 }

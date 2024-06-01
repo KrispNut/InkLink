@@ -29,7 +29,10 @@ class AuthenticationWrapper extends StatelessWidget {
               );
             } else {
               if (snapshot.hasData) {
-                return Dashboard(user: snapshot.data!);
+                return Dashboard(
+                  user: snapshot.data!,
+                  username: '',
+                );
               } else {
                 return const Splash_screen();
               }

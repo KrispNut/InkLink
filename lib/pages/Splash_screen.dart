@@ -78,11 +78,7 @@ class _SplashScreenState extends State<Splash_screen> {
                 child: ElevatedButton(
                   onPressed: () {
                     Future.delayed(Duration(milliseconds: 200), () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Start_screen()),
-                      );
+                      _navigateToNextScreen(context);
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -107,5 +103,19 @@ class _SplashScreenState extends State<Splash_screen> {
         ),
       ),
     );
+  }
+
+  void _navigateToNextScreen(BuildContext context) {
+    // Preload images here
+    precacheImage(AssetImage('assets/images/secure document.png'), context);
+    precacheImage(AssetImage('assets/images/No connection.png'), context);
+
+    // Delay navigation to ensure images are preloaded
+    Future.delayed(Duration(milliseconds: 0), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Start_screen()),
+      );
+    });
   }
 }

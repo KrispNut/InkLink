@@ -351,8 +351,10 @@ class _Login_screenState extends State<Login_screen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              Dashboard(user: FirebaseAuth.instance.currentUser!),
+          builder: (context) => Dashboard(
+            user: FirebaseAuth.instance.currentUser!,
+            username: '',
+          ),
         ),
         (route) => false,
       );
@@ -381,8 +383,10 @@ class _Login_screenState extends State<Login_screen> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                Dashboard(user: FirebaseAuth.instance.currentUser!),
+            builder: (context) => Dashboard(
+              user: FirebaseAuth.instance.currentUser!,
+              username: '',
+            ),
           ),
           (route) => false,
         );

@@ -38,9 +38,8 @@ class Start_screen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Matrix'),
               ),
-              //const SizedBox(height: 100.0),
-              Image.asset('assets/images/No connection.png', height: 500),
-              const SizedBox(height: 200),
+              Image.asset('assets/images/No connection.png'),
+              const SizedBox(height: 100),
               Container(
                 height: 50,
                 width: screenWidth - 30,

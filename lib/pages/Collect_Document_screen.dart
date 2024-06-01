@@ -67,8 +67,10 @@ class Collect_Document_screen extends StatelessWidget {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            Dashboard(user: FirebaseAuth.instance.currentUser!),
+                        builder: (context) => Dashboard(
+                          user: FirebaseAuth.instance.currentUser!,
+                          username: '',
+                        ),
                       ),
                       (route) => false,
                     );

@@ -308,8 +308,10 @@ class _Signup_screen_State extends State<Signup_screen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              Dashboard(user: FirebaseAuth.instance.currentUser!),
+          builder: (context) => Dashboard(
+            user: FirebaseAuth.instance.currentUser!,
+            username: _usernameController.text,
+          ),
         ),
         (route) => false,
       );

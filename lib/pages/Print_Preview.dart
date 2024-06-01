@@ -67,8 +67,9 @@ class Print_Preview extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => Dashboard(
-                                        user:
-                                            FirebaseAuth.instance.currentUser!),
+                                      user: FirebaseAuth.instance.currentUser!,
+                                      username: '',
+                                    ),
                                   ),
                                   (route) => false,
                                 );
@@ -160,7 +161,6 @@ class Print_Preview extends StatelessWidget {
           throw UnsupportedError('Unsupported file type');
       }
     } else {
-      // Use the existing variable for image handling
       final image = pw.MemoryImage(File(imagePath).readAsBytesSync());
       pdf.addPage(
         pw.Page(
